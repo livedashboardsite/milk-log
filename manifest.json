@@ -1,0 +1,13 @@
+{
+  "name": "Milk Log",
+  "short_name": "Milk Log",
+  "description": "Track daily milk delivery and monthly bill",
+  "start_url": "/milk-log/",
+  "scope": "/milk-log/",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#1D9E75",
+  "icons": [
+    { "src": "/milk-log/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

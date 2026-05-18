@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Milk Log</title>
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">🥛</span>
+      <div>
+        <h1>Milk Log</h1>
+        <p class="header-sub" id="header-month"></p>
+      </div>
+    </div>
+    <button class="notif-btn" id="notif-btn" title="Enable daily reminder">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span id="notif-label">Enable reminder</span>
+    </button>
+  </header>
+
+  <!-- Stats -->
+  <section class="stats-row">
+    <div class="stat-card">
+      <span class="stat-label">Delivered</span>
+      <span class="stat-value" id="s-days">0</span>
+      <span class="stat-unit">days</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Total litres</span>
+      <span class="stat-value" id="s-litres">0.0</span>
+      <span class="stat-unit">L</span>
+    </div>
+    <div class="stat-card accent">
+      <span class="stat-label">Bill so far</span>
+      <span class="stat-value" id="s-bill">₹0</span>
+    </div>
+  </section>
+
+  <!-- Log Today -->
+  <section class="log-today card">
+    <p class="card-label">Log today</p>
+    <p class="today-date" id="today-date"></p>
+    <div class="qty-row">
+      <button class="qty-pill active" data-qty="0.5">½ litre</button>
+      <button class="qty-pill" data-qty="1">1 litre</button>
+    </div>
+    <div class="action-row">
+      <button class="action-btn got" id="btn-got">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Got milk
+      </button>
+      <button class="action-btn skip" id="btn-skip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Skipped
+      </button>
+    </div>
+  </section>
+
+  <!-- Rates -->
+  <section class="rates card">
+    <p class="card-label">Rates</p>
+    <div class="rate-row">
+      <span class="rate-label">½ litre</span>
+      <div class="rate-input-wrap">
+        <span class="rupee">₹</span>
+        <input type="number" id="rate-half" value="30" min="1" max="999" />
+      </div>
+    </div>
+    <div class="rate-row">
+      <span class="rate-label">1 litre</span>
+      <div class="rate-input-wrap">
+        <span class="rupee">₹</span>
+        <input type="number" id="rate-full" value="60" min="1" max="999" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Bill -->
+  <section class="bill card">
+    <p class="card-label">Monthly bill</p>
+    <div class="bill-row"><span>½ litre days</span><span id="b-half-days">—</span></div>
+    <div class="bill-row"><span>1 litre days</span><span id="b-full-days">—</span></div>
+    <div class="bill-row"><span>Skipped days</span><span id="b-skip-days">—</span></div>
+    <div class="bill-total-row">
+      <span>Total payable</span>
+      <span id="b-total">₹0</span>
+    </div>
+  </section>
+
+  <!-- View Logs Button -->
+  <button class="view-logs-btn" id="btn-view-logs">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    View logs &amp; history
+  </button>
+
+</div><!-- .app -->
+
+<!-- ═══ LOGS SCREEN (full-screen overlay) ════════════════════════════════ -->
+<div class="logs-screen" id="logs-screen">
+  <div class="lv-header">
+    <button class="lv-close" id="lv-close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h2 class="lv-title">Logs &amp; History</h2>
+    <div></div>
+  </div>
+
+  <div class="lv-body">
+    <!-- Month picker -->
+    <div class="lv-month-row">
+      <label class="lv-month-label">Month</label>
+      <select id="logs-month-select" class="lv-month-select"></select>
+    </div>
+
+    <!-- Stats for selected month -->
+    <div class="lv-stats">
+      <div class="lv-stat">
+        <span class="stat-label">Delivered</span>
+        <span class="stat-value" id="lv-days">0</span>
+        <span class="stat-unit">days</span>
+      </div>
+      <div class="lv-stat">
+        <span class="stat-label">Litres</span>
+        <span class="stat-value" id="lv-litres">0.0</span>
+        <span class="stat-unit">L</span>
+      </div>
+      <div class="lv-stat accent">
+        <span class="stat-label">Bill</span>
+        <span class="stat-value" id="lv-bill">₹0</span>
+      </div>
+    </div>
+
+    <!-- Bill breakdown -->
+    <div class="card lv-bill-card">
+      <p class="card-label">Bill breakdown</p>
+      <div class="bill-row"><span>½ litre days</span><span id="lv-b-half">—</span></div>
+      <div class="bill-row"><span>1 litre days</span><span id="lv-b-full">—</span></div>
+      <div class="bill-row"><span>Skipped days</span><span id="lv-b-skip">—</span></div>
+      <div class="bill-total-row"><span>Total payable</span><span id="lv-b-total">₹0</span></div>
+    </div>
+
+    <!-- Day list -->
+    <p class="section-title">Day by day</p>
+    <div id="lv-list"></div>
+  </div>
+</div>
+
+<!-- ═══ EDIT MODAL ════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="edit-modal-overlay"></div>
+<div class="edit-modal" id="edit-modal">
+  <div class="edit-modal-header">
+    <p class="card-label" style="margin:0">Edit entry</p>
+    <button class="modal-close" id="edit-modal-close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <p class="edit-title" id="edit-title"></p>
+  <div class="qty-row" style="margin-bottom:1rem">
+    <button class="qty-pill edit-qty-pill active" data-qty="0.5">½ litre</button>
+    <button class="qty-pill edit-qty-pill" data-qty="1">1 litre</button>
+  </div>
+  <div class="action-row" style="margin-bottom:.75rem">
+    <button class="action-btn got" id="edit-btn-got">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Got milk
+    </button>
+    <button class="action-btn skip" id="edit-btn-skip">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Skipped
+    </button>
+  </div>
+  <button class="clear-btn" id="edit-btn-clear">Clear this entry</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="./app.js"></script>
+</body>
+</html>
